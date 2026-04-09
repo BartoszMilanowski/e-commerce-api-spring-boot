@@ -1,6 +1,7 @@
 package com.bartmilan.e_comm_api.controller;
 
 import com.bartmilan.e_comm_api.dto.ProductResponseDto;
+import com.bartmilan.e_comm_api.exception.ResourceNotFoundException;
 import com.bartmilan.e_comm_api.model.AvailabilityStatus;
 import com.bartmilan.e_comm_api.model.Category;
 import com.bartmilan.e_comm_api.model.Product;
@@ -29,9 +30,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id){
-        return productService.getById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(productService.getById(id));
     }
 
     @GetMapping("/name/{name}")

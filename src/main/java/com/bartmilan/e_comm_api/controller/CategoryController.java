@@ -25,9 +25,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Category> getById(@PathVariable Long id) {
-        return categoryService.getById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(categoryService.getById(id));
     }
 
     @PostMapping

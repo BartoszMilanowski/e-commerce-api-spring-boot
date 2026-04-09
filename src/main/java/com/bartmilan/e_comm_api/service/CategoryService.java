@@ -1,5 +1,6 @@
 package com.bartmilan.e_comm_api.service;
 
+import com.bartmilan.e_comm_api.exception.ResourceNotFoundException;
 import com.bartmilan.e_comm_api.model.Category;
 import com.bartmilan.e_comm_api.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,9 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> getById(Long id) {
-        return categoryRepository.findById(id);
+    public Category getById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + id));
     }
 
     public Optional<Category> getByName(String name) {
@@ -38,7 +40,7 @@ public class CategoryService {
 
     public Category update(Long id, Category updated){
         Category current = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + id));
         current.setName(updated.getName());
         current.setDescription(updated.getDescription());
         return categoryRepository.save(current);

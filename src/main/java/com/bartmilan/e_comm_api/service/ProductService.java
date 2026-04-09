@@ -1,6 +1,7 @@
 package com.bartmilan.e_comm_api.service;
 
 import com.bartmilan.e_comm_api.dto.ProductResponseDto;
+import com.bartmilan.e_comm_api.exception.ResourceNotFoundException;
 import com.bartmilan.e_comm_api.model.AvailabilityStatus;
 import com.bartmilan.e_comm_api.model.Category;
 import com.bartmilan.e_comm_api.model.Product;
@@ -51,14 +52,15 @@ public class ProductService {
                 .map(this::toDto);
     }
 
-    public Optional<ProductResponseDto> getById(Long id) {
+    public ProductResponseDto getById(Long id) {
         return productRepository.findById(id)
-                .map(this::toDto);
+                .map(this::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + id));
     }
 
     public List<ProductResponseDto> getByCategory(String categoryName) {
         Category category = categoryService.getByName(categoryName)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + categoryName));
         return productRepository.findByCategory(category)
                 .stream()
                 .map(this::toDto)
@@ -97,7 +99,7 @@ public class ProductService {
 
     public Product update(Long id, Product updated) {
         Product current = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + id));
         current.setName(updated.getName());
         current.setDescription(updated.getDescription());
         current.setAvailable(updated.getAvailable());
