@@ -3,6 +3,7 @@ package com.bartmilan.e_comm_api.service;
 import com.bartmilan.e_comm_api.model.AvailabilityStatus;
 import com.bartmilan.e_comm_api.model.Category;
 import com.bartmilan.e_comm_api.model.Product;
+import com.bartmilan.e_comm_api.repository.CategoryRepository;
 import com.bartmilan.e_comm_api.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,11 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryService categoryService;
 
-    public ProductService(ProductRepository productRepository){
+    public ProductService(ProductRepository productRepository, CategoryService categoryService){
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
     }
 
     public List<Product> getAll(){
@@ -31,7 +34,9 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public List<Product> getByCategory(Category category){
+    public List<Product> getByCategory(String categoryName){
+        Category category = categoryService.getByName(categoryName)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
         return productRepository.findByCategory(category);
     }
 
@@ -43,7 +48,7 @@ public class ProductService {
         return productRepository.findByNameContaining(phrase);
     }
 
-    public List<Product> getByAvaibility(AvailabilityStatus status){
+    public List<Product> getByAvailability(AvailabilityStatus status){
         return productRepository.findByAvailable(status);
     }
 

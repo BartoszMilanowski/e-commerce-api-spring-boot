@@ -1,5 +1,7 @@
 package com.bartmilan.e_comm_api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -36,6 +38,7 @@ public class Product {
     @Column
     private List<String> gallery;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
