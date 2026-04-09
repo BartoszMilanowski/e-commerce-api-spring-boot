@@ -1,5 +1,6 @@
 package com.bartmilan.e_comm_api.service;
 
+import com.bartmilan.e_comm_api.dto.ProductResponseDto;
 import com.bartmilan.e_comm_api.model.AvailabilityStatus;
 import com.bartmilan.e_comm_api.model.Category;
 import com.bartmilan.e_comm_api.model.Product;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -17,50 +19,83 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
 
-    public ProductService(ProductRepository productRepository, CategoryService categoryService){
+    public ProductService(ProductRepository productRepository, CategoryService categoryService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
     }
 
-    public List<Product> getAll(){
-        return productRepository.findAll();
+    public ProductResponseDto toDto(Product p) {
+        return new ProductResponseDto(
+                p.getId(),
+                p.getName(),
+                p.getDescription(),
+                p.getAvailable(),
+                p.getPrice(),
+                p.getStock(),
+                p.getMainPhoto(),
+                p.getGallery(),
+                p.getCategory() != null ? p.getCategory().getId() : null,
+                p.getCategory() != null ? p.getCategory().getName() : null
+        );
     }
 
-    public Optional<Product> getByName(String name){
-        return productRepository.findByName(name);
+    public List<ProductResponseDto> getAll() {
+        return productRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Optional<Product> getById(Long id){
-        return productRepository.findById(id);
+    public Optional<ProductResponseDto> getByName(String name) {
+        return productRepository.findByName(name)
+                .map(this::toDto);
     }
 
-    public List<Product> getByCategory(String categoryName){
+    public Optional<ProductResponseDto> getById(Long id) {
+        return productRepository.findById(id)
+                .map(this::toDto);
+    }
+
+    public List<ProductResponseDto> getByCategory(String categoryName) {
         Category category = categoryService.getByName(categoryName)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-        return productRepository.findByCategory(category);
+        return productRepository.findByCategory(category)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
-    public List<Product> getByPriceBetween (BigDecimal priceMin, BigDecimal priceMax){
-        return productRepository.findByPriceBetween(priceMin, priceMax);
+    public List<ProductResponseDto> getByPriceBetween(BigDecimal priceMin, BigDecimal priceMax) {
+        return productRepository.findByPriceBetween(priceMin, priceMax)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
-    public List<Product> getByNameContaining (String phrase){
-        return productRepository.findByNameContaining(phrase);
+    public List<ProductResponseDto> getByNameContaining(String phrase) {
+        return productRepository.findByNameContainingIgnoreCase(phrase)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
-    public List<Product> getByAvailability(AvailabilityStatus status){
-        return productRepository.findByAvailable(status);
+    public List<ProductResponseDto> getByAvailability(AvailabilityStatus status) {
+        return productRepository.findByAvailable(status)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Product create(Product product){
-        return productRepository.save(product);
+    public Product create(Product product) {
+        return productRepository.save(product)
+                ;
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
         productRepository.deleteById(id);
     }
 
-    public Product update(Long id, Product updated){
+    public Product update(Long id, Product updated) {
         Product current = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         current.setName(updated.getName());
