@@ -52,6 +52,11 @@ public class ProductService {
                 .map(this::toDto);
     }
 
+    public Product getProductEntity(Long id){
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + id));
+    }
+
     public ProductResponseDto getById(Long id) {
         return productRepository.findById(id)
                 .map(this::toDto)
