@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
@@ -49,23 +50,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(csrf -> csrf.disable())
-//                .headers(headers -> headers
-//                        .frameOptions(frame -> frame.sameOrigin())
-//                )
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/h2-console/**").permitAll()
-//                        .anyRequest().permitAll()
-//                )
-//                .exceptionHandling(ex -> ex
-//                        .authenticationEntryPoint((request, response, authException) -> {
-//                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-//                        })
-//                );
-//        return http.build();
-//    }
 }

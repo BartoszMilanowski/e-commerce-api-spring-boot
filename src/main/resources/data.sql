@@ -10,3 +10,7 @@ INSERT INTO products (name, description, available, price, stock, main_photo, ga
 ('Nike T-Shirt', 'Cotton t-shirt size M', 'AVAILABLE', 89.99, 200, 'nike_tshirt.jpg', NULL, 2),
 ('Clean Code', 'Book by Robert C. Martin', 'AVAILABLE', 59.99, 100, 'cleancode.jpg', NULL, 3),
 ('Garden Chair', 'Wooden outdoor chair', 'TEMPORARILY_UNAVAILABLE', 299.99, 0, 'chair.jpg', NULL, 4);
+
+INSERT INTO users (email, password, role) VALUES
+('admin@example.com', '$2a$10$.0FZ51Yq1bE7vSbSrMTB4Ob0.OUzKtNuFPAJQNntqAxUFBDo78nn2', 'ADMIN'),
+('user@example.com','$2a$10$ipeeQ3GzOw6pi8jxvHnII.U.GsXRrkU0QxorUVnIjyFYxPnilrhVe','USER');
